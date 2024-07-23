@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
 
@@ -19,25 +20,27 @@ public class Post {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 
-	private Integer user_id;
+	private Integer userId;
 	
+	@NotEmpty
 	@Size(max=50)
 	private String title;
 	
+	@NotEmpty
 	@Size(max=250)
 	private String body;
 	
-	public Post(int id, int user_id, String title, String body) {
+	public Post(Integer id, Integer user_id, String title, String body) {
 		super();
 		this.id = id;
-		this.user_id = user_id;
+		this.userId = user_id;
 		this.title = title;
 		this.body = body;
 	}
 	
 	@Override
 	public String toString() {
-		return "Post [id=" + id + ", userId=" + user_id + ", title=" + title + ", body=" + body + "]";
+		return "Post [id=" + id + ", userId=" + userId + ", title=" + title + ", body=" + body + "]";
 	}
 
 	public Post() {}
@@ -46,16 +49,16 @@ public class Post {
 		return id;
 	}
 	
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 	
 	public int getUserId() {
-		return user_id;
+		return userId;
 	}
 	
-	public void setUserId(int user_id) {
-		this.user_id = user_id;
+	public void setUserId(Integer user_id) {
+		this.userId = user_id;
 	}
 	
 	public String getTitle() {

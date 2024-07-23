@@ -44,23 +44,26 @@ public class PostJpaResource {
 		
 	}
 
-	@GetMapping("/{id}")
-	public Optional<Post> retrievePostDetailsById(@PathVariable int postId) {
+	//@ResponseStatus(HttpStatus.OK)
+	@GetMapping("/{post_id}")
+	public Optional<Post> retrievePostDetailsById(@PathVariable Integer post_id) {
 		
-		Optional<Post> post = postRepository.findById(postId);
+		Optional<Post> post = postRepository.findById(post_id);
 
 		if (post.isEmpty()) {
 			
 			 // dohladanie cez externu api
+			throw new PostNotFoundException("post_id:" + post_id);
 		}
 		
 		return post;
 	}
 	
-	@GetMapping("/{user_id}")
-	public Optional<Post> retrievePostDetailsByUserId(@PathVariable int user_id) {
+	@GetMapping("/users/{user_id}")
+	public Optional<Post> retrievePostDetailsByUserId(@PathVariable Integer user_id) {
 		
-		Optional<Post> post = postRepository.findById(user_id);
+		//find by user id
+		Optional<Post> post = postRepository.findByUserId(user_id);
 
 		if (post.isEmpty()) {
 			throw new PostNotFoundException("user_id:" + user_id);
@@ -71,19 +74,20 @@ public class PostJpaResource {
 	
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("")
-	public ResponseEntity<Object> createPost( @Valid @RequestBody Post post) {
+	public Post createPost( @Valid @RequestBody Post post) {
 
 		// validovat usera cez api
 		
 		Post savedPost = postRepository.save(post);
-		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedPost.getId())
-				.toUri();
-		return ResponseEntity.created(location).build();
+//		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedPost.getId())
+//				.toUri();
+		return savedPost;
+		//return ResponseEntity.created(location).build();
 	}
 	
-	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@ResponseStatus(HttpStatus.OK)
 	@PutMapping("/{id}")
-	public ResponseEntity<Object> updatePost( @Valid @RequestBody Post post, @PathVariable int id) {
+	public Post updatePost( @Valid @RequestBody Post post, @PathVariable Integer id) {
 		Optional<Post> foundPost = postRepository.findById(id);
 
 		if (foundPost.isEmpty()) {
@@ -95,14 +99,13 @@ public class PostJpaResource {
 		myPost.setBody(post.getBody());
 		myPost.setTitle(post.getTitle());
 		
-		postRepository.save(myPost);
-		return ResponseEntity.noContent().build();
+		return postRepository.save(myPost);
 		
 	}
 	
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Object> deletePost(@Valid @PathVariable int id) {
+	public ResponseEntity<Object> deletePost(@Valid @PathVariable Integer id) {
 		Optional<Post> foundPost = postRepository.findById(id);
 
 		if (foundPost.isEmpty()) {
