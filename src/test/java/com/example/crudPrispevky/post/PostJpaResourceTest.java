@@ -1,6 +1,8 @@
 package com.example.crudPrispevky.post;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 
 import java.util.List;
 import java.util.Objects;
@@ -20,6 +22,8 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import com.example.crudPrispevky.user.UserNotFoundException;
+
 
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -35,6 +39,7 @@ class PostJpaResourceTest {
 	@Autowired
 	PostRepository repository;
 	
+	//given
 	@BeforeEach
 	void setUp() {
 		List<Post> posts = List.of(	
@@ -47,7 +52,7 @@ class PostJpaResourceTest {
 		repository.saveAll(posts);
 	}
 	
-	
+	//then
 	
 	@Test
 	void shouldFindAllPosts() {
@@ -63,16 +68,29 @@ class PostJpaResourceTest {
 
 	}
 	
+	
+	// jsonplacer posts go to 100
 	@Test 
 	void shouldThrowNotFoundWhenInvalidPostId() {
-		ResponseEntity<Post> response = restTemplate.exchange("/api/posts/99", HttpMethod.GET, null, Post.class);
+		ResponseEntity<Post> response = restTemplate.exchange("/api/posts/9999", HttpMethod.GET, null, Post.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
 	}
 	
+	@Test
+	void shouldFindExternalPost() {
+		ResponseEntity<Post> response = restTemplate.exchange("/api/posts/10", HttpMethod.GET, null, Post.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(response.getBody()).isNotNull();
+	}
 	
+	@Test 
+	void shouldThrowUserNotFound() {
+		Post post = new Post( 5, 9999, "title created in test", "body created in test");
+		ResponseEntity<Post> response = restTemplate.exchange("/api/posts", HttpMethod.POST, new HttpEntity<Post>(post), Post.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+	}
 	
 	@Test
-	//@Rollback
 	void shouldCreateNewPostWithValidId() {
 		Post post = new Post( 5, 3, "title created in test", "body created in test");
 		ResponseEntity<Post> response = restTemplate.exchange("/api/posts", HttpMethod.POST, new HttpEntity<Post>(post), Post.class);
@@ -91,6 +109,19 @@ class PostJpaResourceTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
+	
+	@Test
+	void shouldNotCreatePostWithInvalidUserId() {
+        Post post = new Post(101, 11, "title", "body"); 
+        ResponseEntity<Post> response = restTemplate.exchange("/api/posts", HttpMethod.POST, new HttpEntity<Post>(post), Post.class);
+       
+        //for now returns Post with null values
+        
+       // Post recievedPost = response.
+        
+      //  assertThat(recievedPost).isEqualTo();
+        
+    }
 
 	 @Test
      void shouldUpdatePostWhenPostIsValid() {
@@ -107,11 +138,6 @@ class PostJpaResourceTest {
         assertThat(responseAfterUpdate.getBody().getTitle()).isEqualTo("Title 3 was updated");
         assertThat(responseAfterUpdate.getBody().getBody()).isEqualTo("Body 3 was updated");
 	  
-//	    
-//	    assertThat(updated.getId()).isEqualTo(3);
-//	    assertThat(updated.getUserId()).isEqualTo(55);
-//	    assertThat(updated.getTitle()).isEqualTo("Title 3 was updated");
-//	    assertThat(updated.getBody()).isEqualTo("Body 3 was updated");
     }
 	
 	 @Test

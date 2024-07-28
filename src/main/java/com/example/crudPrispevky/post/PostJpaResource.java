@@ -1,12 +1,9 @@
 package com.example.crudPrispevky.post;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
-import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -19,9 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-
+import com.example.crudPrispevky.user.UserService;
 
 import jakarta.validation.Valid;
 
@@ -31,58 +27,70 @@ import jakarta.validation.Valid;
 @CrossOrigin("*")
 public class PostJpaResource {
 
+	
 	private PostRepository postRepository;
 
-	public PostJpaResource(PostRepository postRepository) {
+	private PostService postService;
+	
+	@Autowired		
+	private UserService userService;
+	
+	public PostJpaResource(PostRepository postRepository, PostService postService) {
 		super();
 		this.postRepository = postRepository;
+		this.postService = postService;
 	}
 	
 	@GetMapping("/testing")
 	public List<Post> retrieveAllPosts() {
+		
 		return postRepository.findAll();
 		
 	}
 
-	//@ResponseStatus(HttpStatus.OK)
+	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/{post_id}")
-	public Optional<Post> retrievePostDetailsById(@PathVariable Integer post_id) {
+	public Post retrievePostDetailsById(@PathVariable Integer post_id) {
 		
 		Optional<Post> post = postRepository.findById(post_id);
 
-		if (post.isEmpty()) {
-			
+		if (post.isEmpty()) {	
+			Post externalPost = postService.getPostById(post_id);
+			return externalPost;
 			 // dohladanie cez externu api
-			throw new PostNotFoundException("post_id:" + post_id);
+			 // ak nic, tak notFoundException
 		}
 		
-		return post;
+		return post.get();
 	}
 	
 	@GetMapping("/users/{user_id}")
-	public Optional<Post> retrievePostDetailsByUserId(@PathVariable Integer user_id) {
+	public List<Post> retrievePostsByUserId(@PathVariable Integer user_id) {
 		
 		//find by user id
-		Optional<Post> post = postRepository.findByUserId(user_id);
+		List<Post> posts = postRepository.findByUserId(user_id);
 
-		if (post.isEmpty()) {
-			throw new PostNotFoundException("user_id:" + user_id);
+		//post.get().
+		
+		if (posts.isEmpty()) {
+			throw new PostNotFoundForUserException(user_id.toString());
 		}
 		
-		return post;
+		return posts;
 	}
 	
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("")
 	public Post createPost( @Valid @RequestBody Post post) {
-
-		// validovat usera cez api
 		
-		Post savedPost = postRepository.save(post);
-//		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedPost.getId())
-//				.toUri();
-		return savedPost;
-		//return ResponseEntity.created(location).build();
+		if(!userService.doesUserExist(post.getUserId())) {
+			// should not matter, as if when doesUserExist does not find user, it throws 404 exception
+				return null;
+			};	
+			
+			
+		return postRepository.save(post);
+		
 	}
 	
 	@ResponseStatus(HttpStatus.OK)
@@ -94,11 +102,11 @@ public class PostJpaResource {
 			throw new PostNotFoundException("id:" + id);
 		}
 		
-		Post myPost = foundPost.get();
+		Post myPost = new Post( foundPost.get().getId(),
+								foundPost.get().getUserId(),
+								post.getTitle(),
+								post.getBody());
 	
-		myPost.setBody(post.getBody());
-		myPost.setTitle(post.getTitle());
-		
 		return postRepository.save(myPost);
 		
 	}

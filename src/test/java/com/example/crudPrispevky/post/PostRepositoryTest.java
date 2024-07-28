@@ -3,7 +3,6 @@ package com.example.crudPrispevky.post;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,23 +30,9 @@ class PostRepositoryTest {
 
 	@BeforeEach
 	void setUp() {
-		List<Post> posts = List.of(
-					new Post(
-							1,
-							3,
-							"title1",
-							"body1"), 
-					new Post(
-							2,
-							3,
-							"title2",
-							"body2"),
-					new Post(
-							3,
-							5,
-							"title3",
-							"body3"));
-		
+		List<Post> posts = List.of( new Post( 1, 3, "title1", "body1"), 
+									new Post( 2, 3, "title2","body2"),
+									new Post( 3, 5, "title3", "body3"));
 		repository.saveAll(posts);
 	}
 		
@@ -61,8 +46,8 @@ class PostRepositoryTest {
 
 	@Test
 	void shouldReturnByUserId() {
-		Optional<Post> post = repository.findByUserId(5);
-		assertThat(post).isNotNull();
+		List<Post> posts = repository.findByUserId(5);
+		assertThat(posts).isNotNull();
 		
 	}
 		
