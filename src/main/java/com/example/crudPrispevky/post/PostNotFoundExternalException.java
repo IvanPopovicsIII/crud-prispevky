@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class PostNotFoundExternalException extends RuntimeException{
 
 	public PostNotFoundExternalException(String message) {
-		super("post with id : " + message + " does not exist in either inner postgres or external api");
+		super("post with id : " + message + " does not exist in either inner database or external api");
 	}
 	
 }

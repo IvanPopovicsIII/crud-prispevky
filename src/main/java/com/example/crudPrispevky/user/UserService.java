@@ -4,9 +4,6 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
-import com.example.crudPrispevky.post.Post;
-import com.example.crudPrispevky.post.PostNotFoundExternalException;
-
 @Component
 public class UserService {
 	

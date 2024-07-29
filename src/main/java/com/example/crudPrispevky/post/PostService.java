@@ -8,7 +8,6 @@ import org.springframework.web.client.RestClient;
 @Component
 public class PostService {
 
-	
 	private final RestClient restclient;
 		
 	public PostService(RestClient.Builder builder) {
@@ -26,7 +25,5 @@ public class PostService {
 						  })
 						.body(Post.class);
 	}
-	
-	
 	
 }

@@ -1,4 +1,4 @@
-package com.example.crudPrispevky;
+package com.example.crudPrispevky.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,11 +9,11 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
-	
 
-	@SuppressWarnings("removal")
-	@Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+    @SuppressWarnings("removal")
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
         	.csrf((csrf) -> csrf.disable())
         	.authorizeHttpRequests().anyRequest().permitAll()

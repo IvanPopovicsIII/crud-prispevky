@@ -28,6 +28,8 @@ public class Post {
 	@Size(max=250)
 	private String body;
 	
+	
+	
 	public Post(Integer id, Integer user_id, String title, String body) {
 		super();
 		this.id = id;

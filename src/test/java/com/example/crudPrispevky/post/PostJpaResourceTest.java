@@ -56,7 +56,7 @@ class PostJpaResourceTest {
 	
 	@Test
 	void shouldFindAllPosts() {
-		Post[] posts = restTemplate.getForObject("/api/posts/testing", Post[].class);
+		Post[] posts = restTemplate.getForObject("/api/posts", Post[].class);
 		assertThat(posts.length).isEqualTo(4);
 	}
 	
@@ -115,11 +115,12 @@ class PostJpaResourceTest {
         Post post = new Post(101, 11, "title", "body"); 
         ResponseEntity<Post> response = restTemplate.exchange("/api/posts", HttpMethod.POST, new HttpEntity<Post>(post), Post.class);
        
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         //for now returns Post with null values
         
        // Post recievedPost = response.
         
-      //  assertThat(recievedPost).isEqualTo();
+        //assertThat(recievedPost).isEqualTo();
         
     }
 
