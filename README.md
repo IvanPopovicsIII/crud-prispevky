@@ -2,10 +2,10 @@
 
 Web application that supports CRUD operations on Post objects.
 Post object is defined as 
-* id : Integer 
-* userId : Integer  
-* title : String (50)
-* body : String (250)                            
+* **id** : Integer 
+* **userId** : Integer  
+* **title** : String (50)
+* **body** : String (250)                            
 
 ## Requested endpoints  
      Create a Post
@@ -22,7 +22,7 @@ API is documented using Swagger and can be visited on (http://localhost:8080/swa
 
 
 ## First run
-Web application uses postgres 15 for db and docker for containerisation. You can configure docker parameters in compose.yaml file. To start the application, run CrudPrispevkyApplication.java. SecurityFilterChain is set up, that it disables csrf and allows all requests. 
+Web application uses postgres 15 for db and docker for containerisation. You can configure docker parameters in compose.yaml file. To start the application, run CrudPrispevkyApplication.java. SecurityFilterChain is set up, so it disables csrf and allows all requests. 
 
 
 ### Notes
