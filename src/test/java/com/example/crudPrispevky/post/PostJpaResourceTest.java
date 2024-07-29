@@ -116,12 +116,7 @@ class PostJpaResourceTest {
         ResponseEntity<Post> response = restTemplate.exchange("/api/posts", HttpMethod.POST, new HttpEntity<Post>(post), Post.class);
        
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        //for now returns Post with null values
-        
-       // Post recievedPost = response.
-        
-        //assertThat(recievedPost).isEqualTo();
-        
+      
     }
 
 	 @Test
