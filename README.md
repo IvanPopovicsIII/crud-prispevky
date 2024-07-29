@@ -18,9 +18,11 @@ Post object is defined as
      Delete a Post
           Delets a Post using Post id
 
+API is documented using Swagger and can be visited on (http://localhost:8080/swagger-ui/index.html) after running the application
+
 
 ## First run
-Web application uses postgres 15 for db. You can configure postgres parameters in compose.yaml file. To start the application, run CrudPrispevkyApplication.java. SecurityFilterChain is set up, that it disables csrf and allows all requests. 
+Web application uses postgres 15 for db and docker for containerisation. You can configure docker parameters in compose.yaml file. To start the application, run CrudPrispevkyApplication.java. SecurityFilterChain is set up, that it disables csrf and allows all requests. 
 
 
 ### Notes
