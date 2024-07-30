@@ -71,16 +71,19 @@ public class PostJpaResource {
 	      @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) })})
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/{post_id}")
-	public Post retrievePostDetailsById(@PathVariable Integer post_id) {
+	public ResponseEntity<Post> retrievePostDetailsById(@PathVariable Integer post_id) {
 		
 		Optional<Post> post = postRepository.findById(post_id);
 
 		if (post.isEmpty()) {	
 			Post externalPost = postService.getPostById(post_id);
-			return externalPost;
+			ResponseEntity<Post> response = ResponseEntity
+					.status(HttpStatus.CREATED)
+					.body(postRepository.save(externalPost));
+			return response;
 		}
 		
-		return post.get();
+		return ResponseEntity.of( post );
 	}
 	
 	@Operation(
@@ -112,18 +115,26 @@ public class PostJpaResource {
 		      tags = { "post" })
 	@ApiResponses({
 	      @ApiResponse(responseCode = "201", content = { @Content(schema = @Schema(implementation = Post.class), mediaType = "application/json") }),
-	      @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) })})
+	      @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),
+	      @ApiResponse(responseCode = "409", content = { @Content(schema = @Schema(implementation = Post.class), mediaType = "application/json") })})
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("")
-	public Post createPost( @Valid @RequestBody Post post) {
+	public ResponseEntity<Post> createPost( @Valid @RequestBody Post post) {
 		
 		if(!userService.doesUserExist(post.getUserId())) {
 			// should not matter, as if when doesUserExist does not find user, it throws UserNotFound404 exception
 			return null;
 			};	
+		if(postService.doesPostExistInDb(post.getId())) {
+			return ResponseEntity
+					.status(HttpStatus.CONFLICT)
+					.body(post);
+		}
 			
-			
-		return postRepository.save(post);
+		return ResponseEntity
+				.status(HttpStatus.CREATED)
+				.body(postRepository.save(post));
+				
 		
 	}
 	

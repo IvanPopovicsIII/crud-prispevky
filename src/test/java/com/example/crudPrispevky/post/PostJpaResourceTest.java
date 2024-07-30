@@ -52,7 +52,6 @@ class PostJpaResourceTest {
 		repository.saveAll(posts);
 	}
 	
-	//then
 	
 	@Test
 	void shouldFindAllPosts() {
@@ -77,11 +76,12 @@ class PostJpaResourceTest {
 	}
 	
 	@Test
-	void shouldFindExternalPost() {
+	void shouldFindExternalPostAndSaveIt() {
 		ResponseEntity<Post> response = restTemplate.exchange("/api/posts/10", HttpMethod.GET, null, Post.class);
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 		assertThat(response.getBody()).isNotNull();
 	}
+	
 	
 	@Test 
 	void shouldThrowUserNotFound() {
@@ -92,14 +92,21 @@ class PostJpaResourceTest {
 	
 	@Test
 	void shouldCreateNewPostWithValidId() {
-		Post post = new Post( 5, 3, "title created in test", "body created in test");
+		Post post = new Post( 20, 3, "title created in test", "body created in test");
 		ResponseEntity<Post> response = restTemplate.exchange("/api/posts", HttpMethod.POST, new HttpEntity<Post>(post), Post.class);
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 		assertThat(response.getBody()).isNotNull();
-        assertThat(Objects.requireNonNull(response.getBody()).getId()).isEqualTo(5);
+        assertThat(Objects.requireNonNull(response.getBody()).getId()).isEqualTo(20);
         assertThat(response.getBody().getUserId()).isEqualTo(3);
         assertThat(response.getBody().getTitle()).isEqualTo("title created in test");
         assertThat(response.getBody().getBody()).isEqualTo("body created in test");
+	}
+	
+	@Test
+	void shouldNotRewriteExistingUser() {
+		Post post = new Post( 4, 3, "title created in test", "body created in test");
+		ResponseEntity<Post> response = restTemplate.exchange("/api/posts", HttpMethod.POST, new HttpEntity<Post>(post), Post.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
 	}
 	
 	@Test

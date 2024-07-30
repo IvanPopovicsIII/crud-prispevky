@@ -15,13 +15,13 @@ import jakarta.validation.constraints.Size;
 public class Post {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	//@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 
 	private Integer userId;
 	
 	@NotEmpty
-	@Size(max=50)
+	@Size(max=100)
 	private String title;
 	
 	@NotEmpty
