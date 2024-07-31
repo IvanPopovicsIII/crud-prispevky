@@ -1,21 +1,29 @@
 package com.example.crudPrispevky.post;
 
+import org.hibernate.annotations.GenericGenerator;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 
-
-@Entity
+@GenericGenerator( 	name = "UseExistingIdOtherwiseGenerateUsingIdentity",
+					type = com.example.crudPrispevky.config.UseExistingIdOtherwiseGenerateUsingIdentity.class)
+@Entity(name = "postEntity")
 @Table(name = "posts")
 public class Post {
 
+
+	//@GeneratedValue(strategy = GenerationType.AUTO)
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name="id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "UseExistingIdOtherwiseGenerateUsingIdentity")
 	private Integer id;
 
 	private Integer userId;
@@ -28,10 +36,7 @@ public class Post {
 	@Size(max=250)
 	private String body;
 	
-	
-	
-	public Post(Integer id, Integer user_id, String title, String body) {
-		super();
+	public Post(Integer id,Integer user_id, String title, String body) {
 		this.id = id;
 		this.userId = user_id;
 		this.title = title;

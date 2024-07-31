@@ -115,8 +115,7 @@ public class PostJpaResource {
 		      tags = { "post" })
 	@ApiResponses({
 	      @ApiResponse(responseCode = "201", content = { @Content(schema = @Schema(implementation = Post.class), mediaType = "application/json") }),
-	      @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),
-	      @ApiResponse(responseCode = "409", content = { @Content(schema = @Schema(implementation = Post.class), mediaType = "application/json") })})
+	      @ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) })})
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("")
 	public ResponseEntity<Post> createPost( @Valid @RequestBody Post post) {
@@ -125,11 +124,11 @@ public class PostJpaResource {
 			// should not matter, as if when doesUserExist does not find user, it throws UserNotFound404 exception
 			return null;
 			};	
-		if(postService.doesPostExistInDb(post.getId())) {
-			return ResponseEntity
-					.status(HttpStatus.CONFLICT)
-					.body(post);
-		}
+//		if(postService.doesPostExistInDb(post.getId())) {
+//			return ResponseEntity
+//					.status(HttpStatus.CONFLICT)
+//					.body(post);
+//		}
 			
 		return ResponseEntity
 				.status(HttpStatus.CREATED)
