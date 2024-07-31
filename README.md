@@ -4,7 +4,7 @@ Web application that supports CRUD operations on Post objects.
 Post object is defined as 
 * **id** : Integer 
 * **userId** : Integer  
-* **title** : String (50)
+* **title** : String (100)
 * **body** : String (250)                            
 
 ## Requested endpoints  
