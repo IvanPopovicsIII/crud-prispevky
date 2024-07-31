@@ -12,7 +12,7 @@ Post object is defined as
           userId verified by external API [https://jsonplaceholder.typicode.com/] 
      Read a Post
           Via either Post id or userId 
-          If looked up by Post id and not found, it's then looked up on external API [https://jsonplaceholder.typicode.com/]
+          If looked up by Post id and not found, it's then looked up on external API [https://jsonplaceholder.typicode.com/] and saved to db
      Update a Post
           Interchangable parameters are only title and body
      Delete a Post
